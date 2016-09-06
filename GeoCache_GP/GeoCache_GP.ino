@@ -11,7 +11,6 @@ List Team Members Here:
 1. Jordan Sanderson
 2. Patrick Burns
 3. Raymond Lewandowski
-4.
 
 NOTES:
 
@@ -60,6 +59,7 @@ A               // Mode A=Autonomous D=differential E=Estimated
 ******************************************************************************/
 
 // Required
+#include <SD.h>
 #include "Arduino.h"
 
 /*
@@ -90,6 +90,7 @@ char cstr[GPS_RX_BUFSIZ];
 // variables
 uint8_t target = 0;
 float distance = 0.0, heading = 0.0;
+int sdChip = 10;
 
 #if GPS_ON
 #include "SoftwareSerial.h"
@@ -372,8 +373,18 @@ void setup(void)
 #endif		
 
 	// init target button here
+	
+	// see if the card is present and can be initialized:
+	if (!SD.begin(sdChip)) {
+		Serial.println("Card failed, or not present");
+		// don't do anything more:
+		return;
+	}
+	Serial.println("card initialized.");
 
 }
+
+int sdcount = 0;
 
 void loop(void)
 {
@@ -381,7 +392,20 @@ void loop(void)
 
 	// returns with message once a second
 	getGPSMessage();
-
+	
+	if (sdcount > 99)
+		sdcount = 0;
+	if (sdcount < 10)
+		String filename = "MyFile0" + (String)sdcount + ".txt";
+	else
+		String filename = "MyFile" + (String)sdcount + ".txt";
+	File dataFile = SD.open(filename, FILE_WRITE);
+	if (dataFile)
+	{
+		dataFile.print(cstr);
+		dataFile.close();
+	}
+	
 	// if GPRMC message (3rd letter = R)
 	while (cstr[3] == 'R')
 	{
