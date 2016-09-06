@@ -91,6 +91,7 @@ char cstr[GPS_RX_BUFSIZ];
 uint8_t target = 0;
 float distance = 0.0, heading = 0.0;
 int sdChip = 10;
+int button = 15; //Replace with actual button number
 
 #if GPS_ON
 #include "SoftwareSerial.h"
@@ -362,6 +363,15 @@ void setup(void)
 	sequential number of the file.  The filename can not be more than 8
 	chars in length (excluding the ".txt").
 	*/
+
+	// see if the card is present and can be initialized:
+	if (!SD.begin(sdChip)) {
+		Serial.println("Card failed, or not present");
+		// don't do anything more:
+		return;
+	}
+	Serial.println("card initialized.");
+
 #endif
 
 #if GPS_ON
@@ -373,14 +383,6 @@ void setup(void)
 #endif		
 
 	// init target button here
-	
-	// see if the card is present and can be initialized:
-	if (!SD.begin(sdChip)) {
-		Serial.println("Card failed, or not present");
-		// don't do anything more:
-		return;
-	}
-	Serial.println("card initialized.");
 
 }
 
@@ -389,23 +391,15 @@ int sdcount = 0;
 void loop(void)
 {
 	// if button pressed, set new target
-
+	if (debounce(button))
+	{
+		target++;
+		if (target > 3)
+			target = 0;
+	}
 	// returns with message once a second
 	getGPSMessage();
-	
-	if (sdcount > 99)
-		sdcount = 0;
-	if (sdcount < 10)
-		String filename = "MyFile0" + (String)sdcount + ".txt";
-	else
-		String filename = "MyFile" + (String)sdcount + ".txt";
-	File dataFile = SD.open(filename, FILE_WRITE);
-	if (dataFile)
-	{
-		dataFile.print(cstr);
-		dataFile.close();
-	}
-	
+
 	// if GPRMC message (3rd letter = R)
 	while (cstr[3] == 'R')
 	{
@@ -417,6 +411,20 @@ void loop(void)
 
 #if SDC_ON
 		// write current position to SecureDigital then flush
+		String filename;
+		if (sdcount > 99)
+			sdcount = 0;
+		if (sdcount < 10)
+			filename = "MyFile0" + (String)sdcount + ".txt";
+		else
+			filename = "MyFile" + (String)sdcount + ".txt";
+		File dataFile = SD.open(filename, FILE_WRITE);
+		if (dataFile)
+		{
+			dataFile.print(cstr);
+			dataFile.close();
+		}
+		sdcount++;
 #endif
 
 		break;
@@ -436,4 +444,16 @@ void loop(void)
 	// print debug information to OneSheeld Terminal
 	if (serialEventRun) serialEventRun();
 #endif
+}
+
+bool debounce(int pin)
+{
+	for (uint16_t i = 0; i < 1000; i++)
+	{
+		if (digitalRead(pin))
+		{
+			return false;
+		}
+	}
+	return true;
 }
