@@ -399,6 +399,8 @@ void loop(void)
 	}
 	// returns with message once a second
 	getGPSMessage();
+	
+	
 
 	// if GPRMC message (3rd letter = R)
 	while (cstr[3] == 'R')
