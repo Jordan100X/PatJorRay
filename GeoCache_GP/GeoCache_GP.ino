@@ -167,7 +167,21 @@ float degMin2DecDeg(char *cind, char *ccor)
 {
 	float degrees = 0.0;
 
-	// add code here
+	float degMins = atof(ccor);  //Char to float
+
+	int deg = (int)degMins / 100; // Taking out the degrees
+
+	float mins;
+	mins -= deg * 100; // Setting minutes
+
+	float secs;
+	secs = mins - (int)mins; // Setting seconds
+
+	degrees = deg + (mins / 60) + (secs / 3600);
+
+	if (cind == "W" || cind == "S")
+		degrees *= -1;
+
 
 	return(degrees);
 }
@@ -192,6 +206,17 @@ float calcDistance(float flat1, float flon1, float flat2, float flon2)
 	float distance = 0.0;
 
 	// add code here
+	//Difference
+	float longitude = flon2 - flon1;
+	float latitude = flat2 - flat1;
+	// Haversine Fromula
+
+	float a = pow((sin(radians(latitude / 2))), 2) + cos(radians(flat1)) * cos(radians(flat2)) * pow((sin(radians(longitude / 2))), 2);
+
+	float c = 2 * atan2(sqrtf(a), sqrt(1 - a));
+
+	distance = (3959 * 5280) * c;
+
 
 	return(distance);
 }
@@ -213,6 +238,13 @@ float calcBearing(float flat1, float flon1, float flat2, float flon2)
 	float bearing = 0.0;
 
 	// add code here
+	float var1 = sin(radians(flon2 - flon1)) * cos(radians(flat2));
+
+	float var2 = cos(radians(flat1)) * sin(radians(flat2)) - sin(radians(flat1)) * cos(radians(flat2)) * cos(radians(flat2)) * cos(radians(flon2 - flon1));
+
+	bearing = atan2(var1, var2);
+
+	bearing = degrees(bearing);
 
 	return(bearing);
 }
