@@ -60,6 +60,7 @@ A               // Mode A=Autonomous D=differential E=Estimated
 ******************************************************************************/
 
 // Required
+#include <SD.h>
 #include <Adafruit_NeoPixel.h>
 #include "Arduino.h"
 
@@ -91,6 +92,8 @@ char cstr[GPS_RX_BUFSIZ];
 // variables
 uint8_t target = 0;
 float distance = 0.0, heading = 0.0;
+int sdChip = 10;
+int button = 15; //Replace with actual button number
 
 #if GPS_ON
 #include "SoftwareSerial.h"
@@ -167,7 +170,21 @@ float degMin2DecDeg(char *cind, char *ccor)
 {
 	float degrees = 0.0;
 
-	// add code here
+	float degMins = atof(ccor);  //Char to float
+
+	int deg = (int)degMins / 100; // Taking out the degrees
+
+	float mins;
+	mins -= deg * 100; // Setting minutes
+
+	float secs;
+	secs = mins - (int)mins; // Setting seconds
+
+	degrees = deg + (mins / 60) + (secs / 3600);
+
+	if (cind == "W" || cind == "S")
+		degrees *= -1;
+
 
 	return(degrees);
 }
@@ -192,6 +209,17 @@ float calcDistance(float flat1, float flon1, float flat2, float flon2)
 	float distance = 0.0;
 
 	// add code here
+	//Difference
+	float longitude = flon2 - flon1;
+	float latitude = flat2 - flat1;
+	// Haversine Fromula
+
+	float a = pow((sin(radians(latitude / 2))), 2) + cos(radians(flat1)) * cos(radians(flat2)) * pow((sin(radians(longitude / 2))), 2);
+
+	float c = 2 * atan2(sqrtf(a), sqrt(1 - a));
+
+	distance = (3959 * 5280) * c;
+
 
 	return(distance);
 }
@@ -213,6 +241,13 @@ float calcBearing(float flat1, float flon1, float flat2, float flon2)
 	float bearing = 0.0;
 
 	// add code here
+	float var1 = sin(radians(flon2 - flon1)) * cos(radians(flat2));
+
+	float var2 = cos(radians(flat1)) * sin(radians(flat2)) - sin(radians(flat1)) * cos(radians(flat2)) * cos(radians(flat2)) * cos(radians(flon2 - flon1));
+
+	bearing = atan2(var1, var2);
+
+	bearing = degrees(bearing);
 
 	return(bearing);
 }
@@ -506,6 +541,15 @@ void setup(void)
 	sequential number of the file.  The filename can not be more than 8
 	chars in length (excluding the ".txt").
 	*/
+
+	// see if the card is present and can be initialized:
+	if (!SD.begin(sdChip)) {
+		Serial.println("Card failed, or not present");
+		// don't do anything more:
+		return;
+	}
+	Serial.println("card initialized.");
+
 #endif
 
 #if GPS_ON
@@ -520,13 +564,21 @@ void setup(void)
 
 }
 
+int sdcount = 0;
 
 void loop(void)
 {
 	// if button pressed, set new target
-	
+	if (debounce(button))
+	{
+		target++;
+		if (target > 3)
+			target = 0;
+	}
 	// returns with message once a second
 	getGPSMessage();
+	
+	
 
 	// if GPRMC message (3rd letter = R)
 	while (cstr[3] == 'R')
@@ -539,6 +591,20 @@ void loop(void)
 
 #if SDC_ON
 		// write current position to SecureDigital then flush
+		String filename;
+		if (sdcount > 99)
+			sdcount = 0;
+		if (sdcount < 10)
+			filename = "MyFile0" + (String)sdcount + ".txt";
+		else
+			filename = "MyFile" + (String)sdcount + ".txt";
+		File dataFile = SD.open(filename, FILE_WRITE);
+		if (dataFile)
+		{
+			dataFile.print(cstr);
+			dataFile.close();
+		}
+		sdcount++;
 #endif
 
 		break;
@@ -558,4 +624,16 @@ void loop(void)
 	// print debug information to OneSheeld Terminal
 	if (serialEventRun) serialEventRun();
 #endif
+}
+
+bool debounce(int pin)
+{
+	for (uint16_t i = 0; i < 1000; i++)
+	{
+		if (digitalRead(pin))
+		{
+			return false;
+		}
+	}
+	return true;
 }
