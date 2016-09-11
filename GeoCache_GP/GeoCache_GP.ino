@@ -11,7 +11,7 @@ List Team Members Here:
 1. Jordan Sanderson
 2. Patrick Burns
 3. Raymond Lewandowski
-4.
+
 
 NOTES:
 
@@ -60,6 +60,7 @@ A               // Mode A=Autonomous D=differential E=Estimated
 ******************************************************************************/
 
 // Required
+#include <Adafruit_NeoPixel.h>
 #include "Arduino.h"
 
 /*
@@ -72,7 +73,7 @@ all these libraries at the same time.  You are only permitted to
 have NEO_ON, GPS_ON and SDC_ON during the actual GeoCache Treasure
 Hunt.
 */
-#define NEO_ON 0		// NeoPixelShield
+#define NEO_ON 1		// NeoPixelShield
 #define TRM_ON 1		// SerialTerminal
 #define ONE_ON 0		// 1Sheeld
 #define SDC_ON 0		// SecureDigital
@@ -97,7 +98,8 @@ SoftwareSerial gps(GPS_RX, GPS_TX);
 #endif
 
 #if NEO_ON
-#include "NeoPixel.h"
+
+#include "Adafruit_NeoPixel.h"
 Adafruit_NeoPixel strip = Adafruit_NeoPixel(40, NEO_TX, NEO_GRB + NEO_KHZ800);
 #endif
 
@@ -218,6 +220,15 @@ float calcBearing(float flat1, float flon1, float flat2, float flon2)
 /*************************************************
 **** GEO FUNCTIONS - END**************************
 *************************************************/
+enum Direction
+{
+	up,
+	upRight,
+	right,
+	behind,
+	left,
+	upleft
+};
 
 #if NEO_ON
 /*
@@ -225,7 +236,138 @@ Sets target number, heading and distance on NeoPixel Display
 */
 void setNeoPixel(uint8_t target, float heading, float distance)
 {
-	// add code here
+	strip.clear();
+	switch (target)
+	{
+	case 0:
+		strip.setPixelColor(0, strip.Color(229, 83, 0)); //orange
+		strip.show();
+		break;
+	case 1:
+		strip.setPixelColor(0, strip.Color(0, 255, 0));	//green
+		break;
+	case 2:
+		strip.setPixelColor(0, strip.Color(0, 0, 255));		//Blue
+		break;
+	case 3:
+		strip.setPixelColor(0, strip.Color(255, 0, 255));	//purple
+		break;
+	default:
+		strip.setPixelColor(0, strip.Color(255, 0, 0));		//error red
+		break;
+
+	}
+	
+	//heading correct direction
+
+	if (distance >= 15)
+	{
+		strip.setPixelColor(32, strip.Color(255, 0, 0));
+	}
+	if (distance >=	50)
+	{
+		strip.setPixelColor(33, strip.Color(255, 0, 0));
+	}
+	if (distance >= 200)
+	{
+		strip.setPixelColor(34, strip.Color(255, 0, 0));
+	}
+	if (distance >= 400)
+	{
+		strip.setPixelColor(35, strip.Color(255, 0, 0));
+	}
+	if (distance >= 1000)
+	{
+		strip.setPixelColor(36, strip.Color(255, 0, 0));
+	}
+	if (distance >= 2000)
+	{
+		strip.setPixelColor(37, strip.Color(255, 0, 0));
+	}
+	if (distance >= 4000)
+	{
+		strip.setPixelColor(38, strip.Color(255, 0, 0));
+	}
+	if (distance >= 5280)
+	{
+		strip.setPixelColor(39, strip.Color(255, 0, 0));
+	}
+	
+	int relativeBearing = 0;
+	Direction targetdirection;
+
+	//do relative bearing calculations
+	if (relativeBearing <= 5 || relativeBearing >355)
+		targetdirection = Direction::up;
+
+	else if (relativeBearing > 5 && relativeBearing <= 60)
+		targetdirection = Direction::upRight;
+
+	else if (relativeBearing > 60 && relativeBearing <= 120)
+		targetdirection = Direction::right;
+	
+	else if (relativeBearing > 120 && relativeBearing <= 250)
+		targetdirection = Direction::behind;
+
+	else if (relativeBearing > 250 && relativeBearing <= 300)
+		targetdirection = Direction::left;
+	
+	else if (relativeBearing > 300 && relativeBearing <= 355)
+		targetdirection = Direction::upleft;
+	
+
+	switch (targetdirection)
+	{
+	case 0:	//up
+		strip.setPixelColor(3, strip.Color(0, 255, 255));
+		strip.setPixelColor(4, strip.Color(0, 255, 255));
+		strip.setPixelColor(11, strip.Color(0, 255, 255));
+		strip.setPixelColor(12, strip.Color(0, 255, 255));
+		strip.setPixelColor(19, strip.Color(0, 255, 255));
+		strip.setPixelColor(20, strip.Color(0, 255, 255));
+		strip.setPixelColor(27, strip.Color(0, 255, 255));
+		strip.setPixelColor(28, strip.Color(0, 255, 255));
+		break;
+	case 1:	//upright
+		strip.setPixelColor(6, strip.Color(0, 255, 255));
+		strip.setPixelColor(7, strip.Color(0, 255, 255));
+		strip.setPixelColor(14, strip.Color(0, 255, 255));
+		strip.setPixelColor(15, strip.Color(0, 255, 255));
+		strip.setPixelColor(21, strip.Color(0, 255, 255));
+		strip.setPixelColor(28, strip.Color(0, 255, 255));
+		break;
+	case 2:	//right
+		strip.setPixelColor(28, strip.Color(0, 255, 255));
+		strip.setPixelColor(29, strip.Color(0, 255, 255));
+		strip.setPixelColor(30, strip.Color(0, 255, 255));
+		strip.setPixelColor(31, strip.Color(0, 255, 255));
+		break;
+	case 3:	//behind
+		strip.setPixelColor(24, strip.Color(0, 255, 255));
+		strip.setPixelColor(25, strip.Color(0, 255, 255));
+		strip.setPixelColor(26, strip.Color(0, 255, 255));
+		strip.setPixelColor(29, strip.Color(0, 255, 255));
+		strip.setPixelColor(30, strip.Color(0, 255, 255));
+		strip.setPixelColor(31, strip.Color(0, 255, 255));
+		break;
+	case 4: //left
+		strip.setPixelColor(24, strip.Color(0, 255, 255));
+		strip.setPixelColor(25, strip.Color(0, 255, 255));
+		strip.setPixelColor(26, strip.Color(0, 255, 255));
+		strip.setPixelColor(27, strip.Color(0, 255, 255));
+		break;
+	case 5: //upleft
+		strip.setPixelColor(9, strip.Color(0, 255, 255));
+		strip.setPixelColor(10, strip.Color(0, 255, 255));
+		strip.setPixelColor(17, strip.Color(0, 255, 255));
+		strip.setPixelColor(18, strip.Color(0, 255, 255));
+		strip.setPixelColor(27, strip.Color(0, 255, 255));
+		break;
+
+	}
+	
+	strip.show();
+
 }
 
 #endif	// NEO_ON
@@ -340,7 +482,7 @@ void getGPSMessage(void)
 
 void setup(void)
 {
-
+	distance = 6000;
 #if TRM_ON
 	// init serial interface
 	Serial.begin(115200);
@@ -352,6 +494,9 @@ void setup(void)
 
 #if NEO_ON
 	// init NeoPixel Shield
+	strip.begin();
+	strip.setBrightness(10);
+	strip.show();
 #endif	
 
 #if SDC_ON
@@ -375,10 +520,11 @@ void setup(void)
 
 }
 
+
 void loop(void)
 {
 	// if button pressed, set new target
-
+	
 	// returns with message once a second
 	getGPSMessage();
 

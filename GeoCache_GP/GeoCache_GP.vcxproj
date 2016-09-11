@@ -11,7 +11,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{C5F80730-F44F-4478-BDAE-6634EFC2CA88}</ProjectGuid>
+    <ProjectGuid>{E71DBF7D-1AE4-46D7-83FF-7EA4922603EF}</ProjectGuid>
     <RootNamespace>$safeprojectname$</RootNamespace>
     <ProjectName>GeoCache_GP</ProjectName>
   </PropertyGroup>
@@ -47,10 +47,10 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>D:\PF\Arduino\hardware\arduino\avr\libraries\SoftwareSerial\src;D:\PF\Arduino\hardware\arduino\avr\libraries\SoftwareSerial\src\utility;D:\PF\Arduino\libraries;D:\PF\Arduino\hardware\arduino\avr\libraries;C:\Users\UC-PC\Documents\Arduino\libraries;D:\PF\Arduino\hardware\arduino\avr\cores\arduino;D:\PF\Arduino\hardware\arduino\avr\variants\standard;C:\Users\UC-PC\Documents\Arduino\GeoCache_GP;D:\PF\Arduino\hardware\tools\avr/avr/include/;D:\PF\Arduino\hardware\tools\avr//avr/include/avr/;D:\PF\Arduino\hardware\tools\avr/lib\gcc\avr\4.8.1\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <ForcedIncludeFiles>C:\Users\UC-PC\Documents\Arduino\GeoCache_GP\__vm\.GeoCache_GP.vsarduino.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <AdditionalIncludeDirectories>C:\Users\PatrickBurns\Documents\Arduino\libraries\Adafruit_NeoPixel-master;E:\Program Files (x86)\Arduino\hardware\arduino\avr\libraries\SoftwareSerial\src;C:\Users\PatrickBurns\Documents\Arduino\libraries\Adafruit_NeoPixel-master\utility;E:\Program Files (x86)\Arduino\hardware\arduino\avr\libraries\SoftwareSerial\src\utility;E:\Program Files (x86)\Arduino\libraries;E:\Program Files (x86)\Arduino\hardware\arduino\avr\libraries;C:\Users\PatrickBurns\Documents\Arduino\libraries;E:\Program Files (x86)\Arduino\hardware\arduino\avr\cores\arduino;E:\Program Files (x86)\Arduino\hardware\arduino\avr\variants\standard;E:\Documents\Fullsail classes\Computer Organization and System Architexture\GroupGPSproject\PatJorRay\GeoCache_GP;E:\Program Files (x86)\Microsoft Visual Studio 14.0\Common7\IDE\Extensions\v1qlct2g.o03\Micro Platforms\default\debuggers\VM_DBG;E:\Program Files (x86)\Microsoft Visual Studio 14.0\Common7\IDE\Extensions\v1qlct2g.o03\Micro Platforms\default\debuggers;E:\Program Files (x86)\Arduino\hardware\arduino\avr\cores\arduino;E:\Program Files (x86)\Arduino\hardware\arduino\avr\variants\standard;C:\Users\PatrickBurns\Documents\Arduino\libraries\Adafruit_NeoPixel-master;E:\Program Files (x86)\Arduino\hardware\arduino\avr\libraries\SoftwareSerial\src;E:\Program Files (x86)\Arduino\libraries;E:\Program Files (x86)\Arduino\hardware\arduino\avr\libraries;C:\Users\PatrickBurns\Documents\Arduino\libraries;E:\Program Files (x86)\Arduino\hardware\tools\avr/avr/include/;E:\Program Files (x86)\Arduino\hardware\tools\avr//avr/include/avr/;E:\Program Files (x86)\Arduino\hardware\tools\avr/lib\gcc\avr\4.8.1\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <ForcedIncludeFiles>E:\Documents\Fullsail classes\Computer Organization and System Architexture\GroupGPSproject\PatJorRay\GeoCache_GP\__vm\.GeoCache_GP.vsarduino.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
       <IgnoreStandardIncludePath>false</IgnoreStandardIncludePath>
-      <PreprocessorDefinitions>__AVR_ATmega328p__;__AVR_ATmega328P__;F_CPU=16000000L;ARDUINO=106011;ARDUINO_AVR_UNO;ARDUINO_ARCH_AVR;__cplusplus=201103L;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>__AVR_ATmega328p__;__AVR_ATmega328P__;_VMDEBUG=1;F_CPU=16000000L;ARDUINO=106010;ARDUINO_AVR_UNO;ARDUINO_ARCH_AVR;__cplusplus=201103L;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -59,10 +59,14 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
-      <Optimization>MaxSpeed</Optimization>
+      <Optimization>Disabled</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>C:\Users\PatrickBurns\Documents\Arduino\libraries\Adafruit_NeoPixel-master;E:\Program Files (x86)\Arduino\hardware\arduino\avr\libraries\SoftwareSerial\src;C:\Users\PatrickBurns\Documents\Arduino\libraries\Adafruit_NeoPixel-master\utility;E:\Program Files (x86)\Arduino\hardware\arduino\avr\libraries\SoftwareSerial\src\utility;E:\Program Files (x86)\Arduino\libraries;E:\Program Files (x86)\Arduino\hardware\arduino\avr\libraries;C:\Users\PatrickBurns\Documents\Arduino\libraries;E:\Program Files (x86)\Arduino\hardware\arduino\avr\cores\arduino;E:\Program Files (x86)\Arduino\hardware\arduino\avr\variants\standard;E:\Documents\Fullsail classes\Computer Organization and System Architexture\GroupGPSproject\PatJorRay\GeoCache_GP;E:\Program Files (x86)\Arduino\hardware\arduino\avr\cores\arduino;E:\Program Files (x86)\Arduino\hardware\arduino\avr\variants\standard;C:\Users\PatrickBurns\Documents\Arduino\libraries\Adafruit_NeoPixel-master;E:\Program Files (x86)\Arduino\hardware\arduino\avr\libraries\SoftwareSerial\src;E:\Program Files (x86)\Arduino\libraries;E:\Program Files (x86)\Arduino\hardware\arduino\avr\libraries;E:\Program Files (x86)\Microsoft Visual Studio 14.0\Common7\IDE\Extensions\v1qlct2g.o03\Micro Platforms\default\debuggers;C:\Users\PatrickBurns\Documents\Arduino\libraries;E:\Program Files (x86)\Arduino\hardware\tools\avr/avr/include/;E:\Program Files (x86)\Arduino\hardware\tools\avr//avr/include/avr/;E:\Program Files (x86)\Arduino\hardware\tools\avr/lib\gcc\avr\4.8.1\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <ForcedIncludeFiles>E:\Documents\Fullsail classes\Computer Organization and System Architexture\GroupGPSproject\PatJorRay\GeoCache_GP\__vm\.GeoCache_GP.vsarduino.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <WholeProgramOptimization>false</WholeProgramOptimization>
+      <PreprocessorDefinitions>__AVR_ATmega328p__;__AVR_ATmega328P__;F_CPU=16000000L;ARDUINO=106010;ARDUINO_AVR_UNO;ARDUINO_ARCH_AVR;__cplusplus=201103L;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -87,4 +91,9 @@
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
+  <ProjectExtensions>
+    <VisualStudio>
+      <UserProperties arduino.upload.port="COM3" />
+    </VisualStudio>
+  </ProjectExtensions>
 </Project>
