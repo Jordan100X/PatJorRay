@@ -92,6 +92,7 @@ uint8_t target = 0;
 float distance = 0.0, heading = 0.0;
 int sdChip = 10;
 int button = 15; //Replace with actual button number
+File dataFile;
 
 #if GPS_ON
 #include "SoftwareSerial.h"
@@ -367,10 +368,26 @@ void setup(void)
 	// see if the card is present and can be initialized:
 	if (!SD.begin(sdChip)) {
 		Serial.println("Card failed, or not present");
-		// don't do anything more:
-		return;
 	}
 	Serial.println("card initialized.");
+
+	String filename;
+	for (size_t i = 0; i < 99; i++)
+	{
+
+		if (i < 10)
+			filename = "MyFile0" + (String)i + ".txt";
+		else
+			filename = "MyFile" + (String)i + ".txt";
+		if (!SD.exists(filename))
+		{
+			break;
+		}
+	}
+	dataFile = SD.open(filename, FILE_WRITE);
+
+	// don't do anything more:
+	return;
 
 #endif
 
@@ -386,8 +403,6 @@ void setup(void)
 
 }
 
-int sdcount = 0;
-
 void loop(void)
 {
 	// if button pressed, set new target
@@ -399,13 +414,122 @@ void loop(void)
 	}
 	// returns with message once a second
 	getGPSMessage();
-	
-	
+
+
 
 	// if GPRMC message (3rd letter = R)
 	while (cstr[3] == 'R')
 	{
 		// parse message parameters
+
+		/*******************************************************************************
+
+		Following is the GPS Shield "GPRMC" Message Structure.This message is received
+		once a second.You must parse the message to obtain the parameters required for
+		the GeoCache project.GPS provides coordinates in Degrees Minutes(DDDMM.MMMM).
+		The coordinates in the following GPRMC sample message, after converting to Decimal
+		Degrees format(DDD.DDDDDD) is latitude(23.118757) and longitude(120.274060).By
+		the way, this coordinate is GlobaTop Technology in Tiawan, who designed and
+		manufactured the GPS Chip.
+		 0123456789
+		"$GPRMC,064951.000,A,2307.1256,N,12016.4438,E,0.03,165.48,260406,3.05,W,A*2C/r/n"
+
+		$GPRMC,         // GPRMC Message
+		064951.000,     // utc time hhmmss.sss
+		A,              // status A=data valid or V=data not valid
+		2307.1256,      // Latitude 2307.1256 (degrees minutes format dddmm.mmmm)
+		N,              // N/S Indicator N=north or S=south
+		12016.4438,     // Longitude 12016.4438 (degrees minutes format dddmm.mmmm)
+		E,              // E/W Indicator E=east or W=west
+		0.03,           // Speed over ground knots
+		165.48,         // Course over ground (decimal degrees format ddd.dd)
+		260406,         // date ddmmyy
+		3.05,           // Magnetic variation (decimal degrees format ddd.dd)
+		W,              // E=east or W=west
+		A               // Mode A=Autonomous D=differential E=Estimated
+		* 2C             // checksum
+		/ r / n            // return and newline
+
+		******************************************************************************/
+
+		char* utctime[11] = { NULL };
+		char* latitude[11] = { NULL };
+		char*  longitude[11] = { NULL };
+		char*  speed[5] = { NULL };
+		char*  course[7] = { NULL };
+		char*  date[7] = { NULL };
+		char*  magvar[7] = { NULL };
+		int i = 0;
+		while (cstr[i] != ',')
+		{
+			i++;
+		}
+		i++;
+
+		for (int j = 0; cstr[i] != ','; j++)
+		{
+			*utctime[j] = cstr[i];
+			i++;
+		}
+		i++;
+		while (cstr[i] != ',')
+		{
+			i++;
+		}
+		i++;
+
+		for (int j = 0; cstr[i] != ','; j++)
+		{
+			*latitude[j] = cstr[i];
+			i++;
+		}
+		i++;
+		while (cstr[i] != ',')
+		{
+			i++;
+		}
+		i++;
+
+		for (int j = 0; cstr[i] != ','; j++)
+		{
+			*longitude[j] = cstr[i];
+			i++;
+		}
+		i++;
+		while (cstr[i] != ',')
+		{
+			i++;
+		}
+		i++;
+
+		for (int j = 0; cstr[i] != ','; j++)
+		{
+			*speed[j] = cstr[i];
+			i++;
+		}
+		i++;
+
+		for (int j = 0; cstr[i] != ','; j++)
+		{
+			*course[j] = cstr[i];
+			i++;
+		}
+		i++;
+
+		for (int j = 0; cstr[i] != ','; j++)
+		{
+			*date[j] = cstr[i];
+			i++;
+		}
+		i++;
+
+		for (int j = 0; cstr[i] != ','; j++)
+		{
+			*magvar[j] = cstr[i];
+			i++;
+		}
+		i++;
+
 
 		// calculated destination heading
 
@@ -413,20 +537,12 @@ void loop(void)
 
 #if SDC_ON
 		// write current position to SecureDigital then flush
-		String filename;
-		if (sdcount > 99)
-			sdcount = 0;
-		if (sdcount < 10)
-			filename = "MyFile0" + (String)sdcount + ".txt";
-		else
-			filename = "MyFile" + (String)sdcount + ".txt";
-		File dataFile = SD.open(filename, FILE_WRITE);
+
 		if (dataFile)
 		{
 			dataFile.print(cstr);
-			dataFile.close();
 		}
-		sdcount++;
+
 #endif
 
 		break;
