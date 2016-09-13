@@ -150,6 +150,8 @@ These are GPS command messages (only a few are used).
 
 #endif // GPS_ON
 
+float Bearing;
+float CourseOverGround;
 /*************************************************
 **** GEO FUNCTIONS - BEGIN ***********************
 *************************************************/
@@ -250,6 +252,7 @@ float calcBearing(float flat1, float flon1, float flat2, float flon2)
 
 	bearing = degrees(bearing);
 
+	Bearing = bearing;
 	return(bearing);
 }
 
@@ -330,6 +333,11 @@ void setNeoPixel(uint8_t target, float heading, float distance)
 	}
 
 	int relativeBearing = 0;
+	relativeBearing = Bearing - CourseOverGround;
+	if (relativeBearing < 0)
+	{
+		relativeBearing = relativeBearing + 360;
+	}
 	Direction targetdirection;
 
 	//do relative bearing calculations
