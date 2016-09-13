@@ -159,7 +159,6 @@ These are GPS command messages (only a few are used).
 
 #endif // GPS_ON
 
-float Bearing;
 float CourseOverGround;
 /*************************************************
 **** GEO FUNCTIONS - BEGIN ***********************
@@ -342,10 +341,14 @@ void setNeoPixel(uint8_t target, float heading, float distance)
 	}
 
 	int relativeBearing = 0;
-	relativeBearing = Bearing - CourseOverGround;
+	relativeBearing = heading + CourseOverGround;
 	if (relativeBearing < 0)
 	{
 		relativeBearing = relativeBearing + 360;
+	}
+	else if (relativeBearing > 360)
+	{
+		relativeBearing = relativeBearing - 360;
 	}
 	Direction targetdirection;
 
@@ -669,88 +672,88 @@ void loop(void)
 		int j = 0;
 		while (cstr[i] != ',')
 		{
-			*GPRMCMessage[j] = cstr[i];
+			GPRMCMessage[j] = cstr[i];
 			i++;
 		}
 		i++;
 
 		for (j = 0; cstr[i] != ','; j++)
 		{
-			*utctime[j] = cstr[i];
+			utctime[j] = cstr[i];
 			i++;
 		}
 		i++;
 		while (cstr[i] != ',')
 		{
-			*Status[j] = cstr[i];
+			Status[j] = cstr[i];
 			i++;
 		}
 		i++;
 
 		for (j = 0; cstr[i] != ','; j++)
 		{
-			*latitude[j] = cstr[i];
+			latitude[j] = cstr[i];
 			i++;
 		}
 		i++;
 		while (cstr[i] != ',')
 		{
-			*latIndicator[j] = cstr[i];
+			latIndicator[j] = cstr[i];
 			i++;
 		}
 		i++;
 
 		for (j = 0; cstr[i] != ','; j++)
 		{
-			*longitude[j] = cstr[i];
+			longitude[j] = cstr[i];
 			i++;
 		}
 		i++;
 		while (cstr[i] != ',')
 		{
-			*longIndicator[j] = cstr[i];
+			longIndicator[j] = cstr[i];
 			i++;
 		}
 		i++;
 
 		for (j = 0; cstr[i] != ','; j++)
 		{
-			*speed[j] = cstr[i];
+			speed[j] = cstr[i];
 			i++;
 		}
 		i++;
 
 		for (j = 0; cstr[i] != ','; j++)
 		{
-			*course[j] = cstr[i];
+			course[j] = cstr[i];
 			i++;
 		}
 		i++;
 
 		for (j = 0; cstr[i] != ','; j++)
 		{
-			*date[j] = cstr[i];
+			date[j] = cstr[i];
 			i++;
 		}
 		i++;
 
 		for (j = 0; cstr[i] != ','; j++)
 		{
-			*magvar[j] = cstr[i];
+			magvar[j] = cstr[i];
 			i++;
 		}
 		i++;
 
 		for (j = 0; cstr[i] != ','; j++)
 		{
-			*WE[j] = cstr[i];
+			WE[j] = cstr[i];
 			i++;
 		}
 		i++;
 
 		for (j = 0; cstr[i] != ','; j++)
 		{
-			*Mode[j] = cstr[i];
+			Mode[j] = cstr[i];
 			i++;
 		}
 		i++;
