@@ -151,13 +151,11 @@ These are GPS command messages (only a few are used).
 
 #endif // GPS_ON
 
-float Bearing;
 float CourseOverGround;
 /*************************************************
 **** GEO FUNCTIONS - BEGIN ***********************
 *************************************************/
 #pragma region GEO Functions
-
 /**************************************************
 Convert Degrees Minutes (DDMM.MMMM) into Decimal Degrees (DDD.DDDD)
 
@@ -336,10 +334,14 @@ void setNeoPixel(uint8_t target, float heading, float distance)
 	}
 
 	int relativeBearing = 0;
-	relativeBearing = Bearing - CourseOverGround;
+	relativeBearing = heading + CourseOverGround;
 	if (relativeBearing < 0)
 	{
 		relativeBearing = relativeBearing + 360;
+	}
+	else if (relativeBearing > 360)
+	{
+		relativeBearing = relativeBearing - 360;
 	}
 	Direction targetdirection;
 
@@ -529,7 +531,6 @@ void getGPSMessage(void)
 
 void setup(void)
 {
-	distance = 6000;
 #if TRM_ON
 	// init serial interface
 	Serial.begin(115200);
@@ -590,12 +591,14 @@ void setup(void)
 
 	// init target button here
 
+	pinMode(6, INPUT_PULLUP);
+
 }
 
 void loop(void)
 {
 	// if button pressed, set new target
-	if (debounce(button))
+	if (debounce(6))
 	{
 		target++ > 3 ? 0 : target++;
 	}
@@ -749,8 +752,10 @@ void loop(void)
 		i++;
 #pragma endregion
 		// calculated destination heading
-
+		//heading = calcBearing(degMin2DecDeg(lonIndicator, longitude), degMin2DecDeg(latIndicator, latitude), targetLong, targetLat);
+		
 		// calculated destination distance
+		//distance = calcDistance(degMin2DecDeg(lonIndicator, longitude), degMin2DecDeg(latIndicator, latitude), targetLong, targetLat);
 
 #if SDC_ON
 		// write current position to SecureDigital then flush
