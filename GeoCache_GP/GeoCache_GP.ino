@@ -157,7 +157,6 @@ float CourseOverGround;
 **** GEO FUNCTIONS - BEGIN ***********************
 *************************************************/
 #pragma region GEO Functions
-
 /**************************************************
 Convert Degrees Minutes (DDMM.MMMM) into Decimal Degrees (DDD.DDDD)
 
@@ -529,7 +528,6 @@ void getGPSMessage(void)
 
 void setup(void)
 {
-	distance = 6000;
 #if TRM_ON
 	// init serial interface
 	Serial.begin(115200);
@@ -590,12 +588,14 @@ void setup(void)
 
 	// init target button here
 
+	pinMode(6, INPUT_PULLUP);
+
 }
 
 void loop(void)
 {
 	// if button pressed, set new target
-	if (debounce(button))
+	if (debounce(6))
 	{
 		target++ > 3 ? 0 : target++;
 	}
@@ -726,8 +726,10 @@ void loop(void)
 
 #pragma endregion
 		// calculated destination heading
-
+		//heading = calcBearing(degMin2DecDeg(lonIndicator, longitude), degMin2DecDeg(latIndicator, latitude), targetLong, targetLat);
+		
 		// calculated destination distance
+		//distance = calcDistance(degMin2DecDeg(lonIndicator, longitude), degMin2DecDeg(latIndicator, latitude), targetLong, targetLat);
 
 #if SDC_ON
 		// write current position to SecureDigital then flush
