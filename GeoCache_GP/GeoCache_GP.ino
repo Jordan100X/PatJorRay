@@ -171,11 +171,11 @@ float degMin2DecDeg(char *cind, char *ccor)
 
 	int deg = (int)degMins / 100; // Taking out the degrees
 
-	float mins;
+	float mins = degMins;
 	mins -= deg * 100; // Setting minutes
 
 	float secs;
-	secs = mins - (int)mins; // Setting seconds
+	secs = mins / 60; // Setting seconds
 
 	degrees = deg + (mins / 60) + (secs / 3600);
 
@@ -431,8 +431,8 @@ void loop(void)
 	}
 	// returns with message once a second
 	getGPSMessage();
-	
-	
+
+
 
 	// if GPRMC message (3rd letter = R)
 	while (cstr[3] == 'R')
