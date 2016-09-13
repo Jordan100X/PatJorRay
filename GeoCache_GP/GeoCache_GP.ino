@@ -640,19 +640,19 @@ void loop(void)
 
 #pragma region Parse Vars
 
-		char* GPRMCMessage[6] = { NULL };
-		char* utctime[11] = { NULL };
-		char* Status[2] = { NULL };
-		char* latitude[11] = { NULL };
-		char* latIndicator[2] = { NULL };
-		char* longitude[11] = { NULL };
-		char* longIndicator[11] = { NULL };
-		char* speed[5] = { NULL };
-		char* course[7] = { NULL };
-		char* date[7] = { NULL };
-		char* magvar[7] = { NULL };
-		char* WE[2] = { NULL };
-		char* Mode[2] = { NULL };
+		char GPRMCMessage[6] = { NULL };
+		char utctime[11] = { NULL };
+		char Status[2] = { NULL };
+		char latitude[11] = { NULL };
+		char latIndicator[2] = { NULL };
+		char longitude[11] = { NULL };
+		char longIndicator[11] = { NULL };
+		char speed[5] = { NULL };
+		char course[7] = { NULL };
+		char date[7] = { NULL };
+		char magvar[7] = { NULL };
+		char WE[2] = { NULL };
+		char Mode[2] = { NULL };
 		int i = 0;
 
 #pragma endregion
@@ -662,88 +662,88 @@ void loop(void)
 		int j = 0;
 		while (cstr[i] != ',')
 		{
-			*GPRMCMessage[j] = cstr[i];
+			GPRMCMessage[j] = cstr[i];
 			i++;
 		}
 		i++;
 
 		for (j = 0; cstr[i] != ','; j++)
 		{
-			*utctime[j] = cstr[i];
+			utctime[j] = cstr[i];
 			i++;
 		}
 		i++;
 		while (cstr[i] != ',')
 		{
-			*Status[j] = cstr[i];
+			Status[j] = cstr[i];
 			i++;
 		}
 		i++;
 
 		for (j = 0; cstr[i] != ','; j++)
 		{
-			*latitude[j] = cstr[i];
+			latitude[j] = cstr[i];
 			i++;
 		}
 		i++;
 		while (cstr[i] != ',')
 		{
-			*latIndicator[j] = cstr[i];
+			latIndicator[j] = cstr[i];
 			i++;
 		}
 		i++;
 
 		for (j = 0; cstr[i] != ','; j++)
 		{
-			*longitude[j] = cstr[i];
+			longitude[j] = cstr[i];
 			i++;
 		}
 		i++;
 		while (cstr[i] != ',')
 		{
-			*longIndicator[j] = cstr[i];
+			longIndicator[j] = cstr[i];
 			i++;
 		}
 		i++;
 
 		for (j = 0; cstr[i] != ','; j++)
 		{
-			*speed[j] = cstr[i];
+			speed[j] = cstr[i];
 			i++;
 		}
 		i++;
 
 		for (j = 0; cstr[i] != ','; j++)
 		{
-			*course[j] = cstr[i];
+			course[j] = cstr[i];
 			i++;
 		}
 		i++;
 
 		for (j = 0; cstr[i] != ','; j++)
 		{
-			*date[j] = cstr[i];
+			date[j] = cstr[i];
 			i++;
 		}
 		i++;
 
 		for (j = 0; cstr[i] != ','; j++)
 		{
-			*magvar[j] = cstr[i];
+			magvar[j] = cstr[i];
 			i++;
 		}
 		i++;
 
 		for (j = 0; cstr[i] != ','; j++)
 		{
-			*WE[j] = cstr[i];
+			WE[j] = cstr[i];
 			i++;
 		}
 		i++;
 
 		for (j = 0; cstr[i] != ','; j++)
 		{
-			*Mode[j] = cstr[i];
+			Mode[j] = cstr[i];
 			i++;
 		}
 		i++;
