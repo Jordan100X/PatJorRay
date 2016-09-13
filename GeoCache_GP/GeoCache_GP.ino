@@ -640,13 +640,19 @@ void loop(void)
 
 #pragma region Parse Vars
 
+		char* GPRMCMessage[6] = { NULL };
 		char* utctime[11] = { NULL };
+		char* Status[2] = { NULL };
 		char* latitude[11] = { NULL };
-		char*  longitude[11] = { NULL };
-		char*  speed[5] = { NULL };
-		char*  course[7] = { NULL };
-		char*  date[7] = { NULL };
-		char*  magvar[7] = { NULL };
+		char* latIndicator[2] = { NULL };
+		char* longitude[11] = { NULL };
+		char* longIndicator[11] = { NULL };
+		char* speed[5] = { NULL };
+		char* course[7] = { NULL };
+		char* date[7] = { NULL };
+		char* magvar[7] = { NULL };
+		char* WE[2] = { NULL };
+		char* Mode[2] = { NULL };
 		int i = 0;
 
 #pragma endregion
@@ -656,6 +662,7 @@ void loop(void)
 		int j = 0;
 		while (cstr[i] != ',')
 		{
+			*GPRMCMessage[j] = cstr[i];
 			i++;
 		}
 		i++;
@@ -668,6 +675,7 @@ void loop(void)
 		i++;
 		while (cstr[i] != ',')
 		{
+			*Status[j] = cstr[i];
 			i++;
 		}
 		i++;
@@ -680,6 +688,7 @@ void loop(void)
 		i++;
 		while (cstr[i] != ',')
 		{
+			*latIndicator[j] = cstr[i];
 			i++;
 		}
 		i++;
@@ -692,6 +701,7 @@ void loop(void)
 		i++;
 		while (cstr[i] != ',')
 		{
+			*longIndicator[j] = cstr[i];
 			i++;
 		}
 		i++;
@@ -724,6 +734,19 @@ void loop(void)
 		}
 		i++;
 
+		for (j = 0; cstr[i] != ','; j++)
+		{
+			*WE[j] = cstr[i];
+			i++;
+		}
+		i++;
+
+		for (j = 0; cstr[i] != ','; j++)
+		{
+			*Mode[j] = cstr[i];
+			i++;
+		}
+		i++;
 #pragma endregion
 		// calculated destination heading
 		//heading = calcBearing(degMin2DecDeg(lonIndicator, longitude), degMin2DecDeg(latIndicator, latitude), targetLong, targetLat);
