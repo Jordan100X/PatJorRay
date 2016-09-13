@@ -1,3 +1,4 @@
+#pragma region Code
 /******************************************************************************
 
 GeoCache Hunt Project (GeoCache.cpp)
@@ -153,6 +154,7 @@ These are GPS command messages (only a few are used).
 /*************************************************
 **** GEO FUNCTIONS - BEGIN ***********************
 *************************************************/
+#pragma region GEO Functions
 
 /**************************************************
 Convert Degrees Minutes (DDMM.MMMM) into Decimal Degrees (DDD.DDDD)
@@ -253,6 +255,7 @@ float calcBearing(float flat1, float flon1, float flat2, float flon2)
 	return(bearing);
 }
 
+#pragma endregion
 /*************************************************
 **** GEO FUNCTIONS - END**************************
 *************************************************/
@@ -586,13 +589,10 @@ void loop(void)
 	// if button pressed, set new target
 	if (debounce(button))
 	{
-		target++;
-		if (target > 3)
-			target = 0;
+		target++ > 3 ? 0 : target++;
 	}
 	// returns with message once a second
 	getGPSMessage();
-
 
 
 	// if GPRMC message (3rd letter = R)
@@ -630,6 +630,8 @@ void loop(void)
 
 		******************************************************************************/
 
+#pragma region Parse Vars
+
 		char* utctime[11] = { NULL };
 		char* latitude[11] = { NULL };
 		char*  longitude[11] = { NULL };
@@ -638,13 +640,19 @@ void loop(void)
 		char*  date[7] = { NULL };
 		char*  magvar[7] = { NULL };
 		int i = 0;
+
+#pragma endregion
+
+#pragma region Parsing
+
+		int j = 0;
 		while (cstr[i] != ',')
 		{
 			i++;
 		}
 		i++;
 
-		for (int j = 0; cstr[i] != ','; j++)
+		for (j = 0; cstr[i] != ','; j++)
 		{
 			*utctime[j] = cstr[i];
 			i++;
@@ -656,7 +664,7 @@ void loop(void)
 		}
 		i++;
 
-		for (int j = 0; cstr[i] != ','; j++)
+		for (j = 0; cstr[i] != ','; j++)
 		{
 			*latitude[j] = cstr[i];
 			i++;
@@ -668,7 +676,7 @@ void loop(void)
 		}
 		i++;
 
-		for (int j = 0; cstr[i] != ','; j++)
+		for (j = 0; cstr[i] != ','; j++)
 		{
 			*longitude[j] = cstr[i];
 			i++;
@@ -680,34 +688,35 @@ void loop(void)
 		}
 		i++;
 
-		for (int j = 0; cstr[i] != ','; j++)
+		for (j = 0; cstr[i] != ','; j++)
 		{
 			*speed[j] = cstr[i];
 			i++;
 		}
 		i++;
 
-		for (int j = 0; cstr[i] != ','; j++)
+		for (j = 0; cstr[i] != ','; j++)
 		{
 			*course[j] = cstr[i];
 			i++;
 		}
 		i++;
 
-		for (int j = 0; cstr[i] != ','; j++)
+		for (j = 0; cstr[i] != ','; j++)
 		{
 			*date[j] = cstr[i];
 			i++;
 		}
 		i++;
 
-		for (int j = 0; cstr[i] != ','; j++)
+		for (j = 0; cstr[i] != ','; j++)
 		{
 			*magvar[j] = cstr[i];
 			i++;
 		}
 		i++;
 
+#pragma endregion
 		// calculated destination heading
 
 		// calculated destination distance
@@ -748,3 +757,4 @@ bool debounce(int pin)
 	}
 	return true;
 }
+#pragma endregion
