@@ -94,8 +94,16 @@ char cstr[GPS_RX_BUFSIZ];
 uint8_t target = 0;
 float distance = 0.0, heading = 0.0;
 int sdChip = 10;
-int button = 15; //Replace with actual button number
+int button = 6; //Replace with actual button number
 File dataFile;
+
+struct TargetLocale
+{
+	float lon;
+	float lat;
+};
+
+TargetLocale targets[4];
 
 #if GPS_ON
 #include "SoftwareSerial.h"
@@ -253,7 +261,6 @@ float calcBearing(float flat1, float flon1, float flat2, float flon2)
 
 	bearing = degrees(bearing);
 
-	Bearing = bearing;
 	return(bearing);
 }
 
@@ -588,7 +595,7 @@ void setup(void)
 
 	// init target button here
 
-	pinMode(6, INPUT_PULLUP);
+	pinMode(button, INPUT_PULLUP);
 
 }
 
@@ -640,19 +647,19 @@ void loop(void)
 
 #pragma region Parse Vars
 
-		char* GPRMCMessage[6] = { NULL };
-		char* utctime[11] = { NULL };
-		char* Status[2] = { NULL };
-		char* latitude[11] = { NULL };
-		char* latIndicator[2] = { NULL };
-		char* longitude[11] = { NULL };
-		char* longIndicator[11] = { NULL };
-		char* speed[5] = { NULL };
-		char* course[7] = { NULL };
-		char* date[7] = { NULL };
-		char* magvar[7] = { NULL };
-		char* WE[2] = { NULL };
-		char* Mode[2] = { NULL };
+		char GPRMCMessage[6] = { NULL };
+		char utctime[11] = { NULL };
+		char Status[2] = { NULL };
+		char latitude[11] = { NULL };
+		char latIndicator[2] = { NULL };
+		char longitude[11] = { NULL };
+		char longIndicator[11] = { NULL };
+		char speed[5] = { NULL };
+		char course[7] = { NULL };
+		char date[7] = { NULL };
+		char magvar[7] = { NULL };
+		char WE[2] = { NULL };
+		char Mode[2] = { NULL };
 		int i = 0;
 
 #pragma endregion
@@ -749,10 +756,10 @@ void loop(void)
 		i++;
 #pragma endregion
 		// calculated destination heading
-		//heading = calcBearing(degMin2DecDeg(lonIndicator, longitude), degMin2DecDeg(latIndicator, latitude), targetLong, targetLat);
+		heading = calcBearing(degMin2DecDeg(longIndicator, longitude), degMin2DecDeg(latIndicator, latitude), targets[target].lon, targets[target].lat);
 		
 		// calculated destination distance
-		//distance = calcDistance(degMin2DecDeg(lonIndicator, longitude), degMin2DecDeg(latIndicator, latitude), targetLong, targetLat);
+		distance = calcDistance(degMin2DecDeg(longIndicator, longitude), degMin2DecDeg(latIndicator, latitude), targets[target].lon, targets[target].lat);
 
 #if SDC_ON
 		// write current position to SecureDigital then flush
