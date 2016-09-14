@@ -94,7 +94,7 @@ char cstr[GPS_RX_BUFSIZ];
 uint8_t target = 0;
 float distance = 0.0, heading = 0.0;
 int sdChip = 10;
-int button = 6; //Replace with actual button number
+int button = 3; //Replace with actual button number
 File dataFile;
 
 struct TargetLocale
@@ -225,7 +225,7 @@ float calcDistance(float flat1, float flon1, float flat2, float flon2)
 	float latitude = flat2 - flat1;
 	// Haversine Fromula
 
-	float a = pow((sin(radians(latitude / 2))), 2) + cos(radians(flat1)) * cos(radians(flat2)) * pow((sin(radians(longitude / 2))), 2);
+	float a = sin(radians(latitude / 2)) * sin(radians(latitude / 2)) + cos(radians(flat1)) * cos(radians(flat2)) * sin(radians(longitude / 2)) * sin(radians(longitude / 2));
 
 	float c = 2 * atan2(sqrtf(a), sqrt(1 - a));
 
@@ -250,15 +250,30 @@ angle in degrees from magnetic north
 float calcBearing(float flat1, float flon1, float flat2, float flon2)
 {
 	float bearing = 0.0;
+	float var1 = 0.0;
+	float var2 = 0.0;
 
 	// add code here
-	float var1 = sin(radians(flon2 - flon1)) * cos(radians(flat2));
+#if 0 // Initial Bearing
+	{
+		var1 = sin(radians(flon2 - flon1)) * cos(radians(flat2));
+		var2 = cos(radians(flat1)) * sin(radians(flat2)) - sin(radians(flat1)) * cos(radians(flat2)) * cos(radians(flat2)) * cos(radians(flon2 - flon1));
 
-	float var2 = cos(radians(flat1)) * sin(radians(flat2)) - sin(radians(flat1)) * cos(radians(flat2)) * cos(radians(flat2)) * cos(radians(flon2 - flon1));
+		bearing = degrees(atan2(var1, var2));
 
-	bearing = atan2(var1, var2);
+		if (bearing < 0)
+			bearing = fmod(bearing + 360, 360);
+	}
+#else  // Final Bearing
+	{
+		var1 = sin(radians(flon1 - flon2)) * cos(radians(flat1));
+		var2 = cos(radians(flat2)) * sin(radians(flat1)) - sin(radians(flat2)) * cos(radians(flat1)) * cos(radians(flat1)) * cos(radians(flon1 - flon2));
 
-	bearing = degrees(bearing);
+		bearing = degrees(atan2(var1, var2));
+
+		bearing = (fmod(bearing + 180, 360));
+	}
+#endif
 
 	return(bearing);
 }
@@ -599,7 +614,8 @@ void setup(void)
 	// init target button here
 
 	pinMode(button, INPUT_PULLUP);
-
+	targets[0].lon = GEOLON0;
+	targets[1].lat = GEOLAT0;
 }
 
 void loop(void)
@@ -609,6 +625,9 @@ void loop(void)
 	{
 		target++ > 3 ? 0 : target++;
 	}
+
+	strip.setBrightness(map(analogRead(A0), 0, 1023, 0, 255));
+
 	// returns with message once a second
 	getGPSMessage();
 
@@ -670,7 +689,7 @@ void loop(void)
 #pragma region Parsing
 
 		int j = 0;
-		while (cstr[i] != ',')
+		for (j = 0; cstr[i] != ','; j++)
 		{
 			GPRMCMessage[j] = cstr[i];
 			i++;
@@ -683,7 +702,7 @@ void loop(void)
 			i++;
 		}
 		i++;
-		while (cstr[i] != ',')
+		for (j = 0; cstr[i] != ','; j++)
 		{
 			Status[j] = cstr[i];
 			i++;
@@ -696,7 +715,7 @@ void loop(void)
 			i++;
 		}
 		i++;
-		while (cstr[i] != ',')
+		for (j = 0; cstr[i] != ','; j++)
 		{
 			latIndicator[j] = cstr[i];
 			i++;
@@ -709,7 +728,7 @@ void loop(void)
 			i++;
 		}
 		i++;
-		while (cstr[i] != ',')
+		for (j = 0; cstr[i] != ','; j++)
 		{
 			longIndicator[j] = cstr[i];
 			i++;
@@ -758,9 +777,10 @@ void loop(void)
 		}
 		i++;
 #pragma endregion
+
 		// calculated destination heading
 		heading = calcBearing(degMin2DecDeg(longIndicator, longitude), degMin2DecDeg(latIndicator, latitude), targets[target].lon, targets[target].lat);
-		
+
 		// calculated destination distance
 		distance = calcDistance(degMin2DecDeg(longIndicator, longitude), degMin2DecDeg(latIndicator, latitude), targets[target].lon, targets[target].lat);
 
