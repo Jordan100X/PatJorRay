@@ -79,7 +79,7 @@ Hunt.
 #define TRM_ON 1		// SerialTerminal
 #define ONE_ON 0		// 1Sheeld
 #define SDC_ON 0		// SecureDigital
-#define GPS_ON 1		// GPSShield (off = simulated)
+#define GPS_ON 0		// GPSShield (off = simulated)
 
 // define pin usage
 #define NEO_TX	6		// NEO transmit
@@ -193,7 +193,7 @@ float degMin2DecDeg(char *cind, char *ccor)
 
 	degrees = deg + (mins / 60) + (secs / 3600);
 
-	if (cind == "W" || cind == "S")
+	if (cind[0] == 'W' || cind[0] == 'S')
 		degrees *= -1;
 
 
@@ -219,17 +219,19 @@ float calcDistance(float flat1, float flon1, float flat2, float flon2)
 {
 	float distance = 0.0;
 
+	float lat1 = radians(flat1);
+	float lat2 = radians(flat2);
 	// add code here
 	//Difference
-	float longitude = flon2 - flon1;
-	float latitude = flat2 - flat1;
+	float latitude = radians(flat2 - flat1);
+	float longitude = radians(flon2 - flon1);
 	// Haversine Fromula
 
-	float a = sin(radians(latitude / 2)) * sin(radians(latitude / 2)) + cos(radians(flat1)) * cos(radians(flat2)) * sin(radians(longitude / 2)) * sin(radians(longitude / 2));
+	float a = sin(latitude / 2.0f) * sin(latitude / 2.0f) + cos(lat1) * cos(lat2) * sin(longitude / 2.0f) * sin(longitude / 2.0f);
 
-	float c = 2 * atan2(sqrtf(a), sqrt(1 - a));
+	float c = 2.0f * atan2(sqrtf(a), sqrtf(1 - a));
 
-	distance = (3959 * 5280) * c;
+	distance = (3959.0f * 5280.0f) * c;
 
 
 	return(distance);
@@ -254,7 +256,7 @@ float calcBearing(float flat1, float flon1, float flat2, float flon2)
 	float var2 = 0.0;
 
 	// add code here
-#if 0 // Initial Bearing
+#if 1 // Initial Bearing
 	{
 		var1 = sin(radians(flon2 - flon1)) * cos(radians(flat2));
 		var2 = cos(radians(flat1)) * sin(radians(flat2)) - sin(radians(flat1)) * cos(radians(flat2)) * cos(radians(flat2)) * cos(radians(flon2 - flon1));
@@ -365,6 +367,8 @@ void setNeoPixel(uint8_t target, float heading, float distance)
 	{
 		relativeBearing = relativeBearing - 360;
 	}
+
+	Serial.println(relativeBearing);
 	Direction targetdirection;
 
 	//do relative bearing calculations
@@ -616,6 +620,7 @@ void setup(void)
 	pinMode(button, INPUT_PULLUP);
 	targets[0].lon = GEOLON0;
 	targets[1].lat = GEOLAT0;
+	//Set Tartgets
 }
 
 void loop(void)
@@ -624,6 +629,7 @@ void loop(void)
 	if (debounce(6))
 	{
 		target++ > 3 ? 0 : target++;
+		Serial.println("Set Target");
 	}
 
 	strip.setBrightness(map(analogRead(A0), 0, 1023, 0, 255));
@@ -675,7 +681,7 @@ void loop(void)
 		char latitude[11] = { NULL };
 		char latIndicator[2] = { NULL };
 		char longitude[11] = { NULL };
-		char longIndicator[11] = { NULL };
+		char longIndicator[2] = { NULL };
 		char speed[5] = { NULL };
 		char course[7] = { NULL };
 		char date[7] = { NULL };
@@ -695,94 +701,119 @@ void loop(void)
 			i++;
 		}
 		i++;
-
+		Serial.println("GP Message " + (String)GPRMCMessage);
+		delay(100);
 		for (j = 0; cstr[i] != ','; j++)
 		{
 			utctime[j] = cstr[i];
 			i++;
 		}
 		i++;
+		Serial.println("Utctime " + (String)utctime);
+		delay(100);
 		for (j = 0; cstr[i] != ','; j++)
 		{
 			Status[j] = cstr[i];
 			i++;
 		}
 		i++;
-
+		Serial.println("Status " + (String)Status);
+		delay(100);
 		for (j = 0; cstr[i] != ','; j++)
 		{
 			latitude[j] = cstr[i];
 			i++;
 		}
 		i++;
+		Serial.println("Lat " + (String)latitude);
+		delay(100);
 		for (j = 0; cstr[i] != ','; j++)
 		{
 			latIndicator[j] = cstr[i];
 			i++;
 		}
 		i++;
-
+		Serial.println("LatI " + (String)latIndicator);
+		delay(100);
 		for (j = 0; cstr[i] != ','; j++)
 		{
 			longitude[j] = cstr[i];
 			i++;
 		}
 		i++;
+		Serial.println("Long " + (String)longitude);
+		delay(100);
 		for (j = 0; cstr[i] != ','; j++)
 		{
 			longIndicator[j] = cstr[i];
 			i++;
 		}
 		i++;
-
+		Serial.println("LongI " + (String)longIndicator);
+		delay(100);
 		for (j = 0; cstr[i] != ','; j++)
 		{
 			speed[j] = cstr[i];
 			i++;
 		}
 		i++;
-
+		Serial.println("Speed " + (String)speed);
+		delay(100);
 		for (j = 0; cstr[i] != ','; j++)
 		{
 			course[j] = cstr[i];
 			i++;
 		}
 		i++;
-
+		Serial.println("Course " + (String)course);
+		delay(100);
 		for (j = 0; cstr[i] != ','; j++)
 		{
 			date[j] = cstr[i];
 			i++;
 		}
 		i++;
-
+		Serial.println("Date " + (String)date);
+		delay(100);
 		for (j = 0; cstr[i] != ','; j++)
 		{
 			magvar[j] = cstr[i];
 			i++;
 		}
 		i++;
-
+		Serial.println("Magvar " + (String)magvar);
+		delay(100);
 		for (j = 0; cstr[i] != ','; j++)
 		{
 			WE[j] = cstr[i];
 			i++;
 		}
 		i++;
-
-		for (j = 0; cstr[i] != ','; j++)
+		Serial.println("WE " + (String)WE);
+		delay(100);
+		for (j = 0; j < 1; j++)
 		{
 			Mode[j] = cstr[i];
 			i++;
 		}
 		i++;
+		Serial.println("Mode " + (String)Mode);
+		delay(100);
+		Serial.println((String)cstr);
+		delay(1000);
 #pragma endregion
+		Serial.println("Parsing");
 
 		// calculated destination heading
+
 		heading = calcBearing(degMin2DecDeg(longIndicator, longitude), degMin2DecDeg(latIndicator, latitude), targets[target].lon, targets[target].lat);
 
 		// calculated destination distance
 		distance = calcDistance(degMin2DecDeg(longIndicator, longitude), degMin2DecDeg(latIndicator, latitude), targets[target].lon, targets[target].lat);
+
+		Serial.println("Set Distance and Bearing");
+		Serial.println(String(distance) + " " + String(heading));
+
 
 #if SDC_ON
 		// write current position to SecureDigital then flush
