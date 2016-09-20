@@ -806,10 +806,10 @@ void loop(void)
 
 		// calculated destination heading
 
-		heading = calcBearing(degMin2DecDeg(longIndicator, longitude), degMin2DecDeg(latIndicator, latitude), targets[target].lon, targets[target].lat);
+		heading = calcBearing(degMin2DecDeg(latIndicator, latitude), degMin2DecDeg(longIndicator, longitude), targets[target].lat, targets[target].lon);
 
 		// calculated destination distance
-		distance = calcDistance(degMin2DecDeg(longIndicator, longitude), degMin2DecDeg(latIndicator, latitude), targets[target].lon, targets[target].lat);
+		distance = calcDistance(degMin2DecDeg(latIndicator, latitude), degMin2DecDeg(longIndicator, longitude), targets[target].lat, targets[target].lon);
 
 		Serial.println("Set Distance and Bearing");
 		Serial.println(String(distance) + " " + String(heading));
