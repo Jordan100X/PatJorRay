@@ -814,7 +814,6 @@ void loop(void)
 		Serial.println("Set Distance and Bearing");
 		Serial.println(String(distance) + " " + String(heading));
 
-
 #if SDC_ON
 		// write current position to SecureDigital then flush
 		dataFile.println(longitude + ',' + latitude + ',' + distance);
