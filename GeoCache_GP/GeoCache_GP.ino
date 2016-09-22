@@ -324,7 +324,7 @@ void setNeoPixel(uint8_t target, float heading, float distance)
 
 	//heading correct direction
 
-	if (distance >= 15)
+	if (distance >= 25)
 	{
 		strip.setPixelColor(32, strip.Color(255, 0, 0));
 	}
@@ -332,27 +332,27 @@ void setNeoPixel(uint8_t target, float heading, float distance)
 	{
 		strip.setPixelColor(33, strip.Color(255, 0, 0));
 	}
-	if (distance >= 200)
+	if (distance >= 100)
 	{
 		strip.setPixelColor(34, strip.Color(255, 0, 0));
 	}
-	if (distance >= 400)
+	if (distance >= 200)
 	{
 		strip.setPixelColor(35, strip.Color(255, 0, 0));
 	}
-	if (distance >= 1000)
+	if (distance >= 400)
 	{
 		strip.setPixelColor(36, strip.Color(255, 0, 0));
 	}
-	if (distance >= 2000)
+	if (distance >= 800)
 	{
 		strip.setPixelColor(37, strip.Color(255, 0, 0));
 	}
-	if (distance >= 4000)
+	if (distance >= 1600)
 	{
 		strip.setPixelColor(38, strip.Color(255, 0, 0));
 	}
-	if (distance >= 5280)
+	if (distance >= 3200)
 	{
 		strip.setPixelColor(39, strip.Color(255, 0, 0));
 	}
@@ -369,7 +369,7 @@ void setNeoPixel(uint8_t target, float heading, float distance)
 	}
 
 	Direction targetdirection;
-	Serial.println("Relative Bearing: " + String(relativeBearing));
+	//Serial.println("Relative Bearing: " + String(relativeBearing));
 
 	//do relative bearing calculations
 	if (relativeBearing <= 5 || relativeBearing > 355)
@@ -582,9 +582,9 @@ void setup(void)
 
 	// see if the card is present and can be initialized:
 	if (!SD.begin()) {
-		Serial.println("Card failed, or not present");
+		//Serial.println("Card failed, or not present");
 	}
-	Serial.println("card initialized.");
+	//Serial.println("card initialized.");
 
 	String filename;
 	for (size_t i = 0; i < 100; i++)
@@ -612,18 +612,20 @@ void setup(void)
 #endif		
 
 	// init target button here
-
 	pinMode(button, INPUT_PULLUP);
-	targets[0].lon = GEOLON0;
-	targets[0].lat = GEOLAT0;
-	//Get rid of this
-	targets[1].lon = GEOLON0 + 1;
-	targets[1].lat = GEOLON0 + 1;
-	targets[2].lon = GEOLON0 + 2;
-	targets[2].lat = GEOLON0 + 2;
-	targets[3].lon = GEOLON0 + 3;
-	targets[3].lat = GEOLON0 + 3;
+
 	//Set Tartgets
+	//ex:
+	//	GEOLAT0 28.594532
+	//	GEOLON0 -81.304437
+	targets[0].lat = 28.59544f;
+	targets[0].lon = -81.30397f;
+	targets[1].lat = 28.59208f;
+	targets[1].lon = -81.30407f;
+	targets[2].lat = 28.59671f;
+	targets[2].lon = -81.30205f;
+	targets[3].lat = 28.5962f;
+	targets[3].lon = -81.30538f;
 }
 
 void loop(void)
@@ -632,7 +634,7 @@ void loop(void)
 	if (debounce(button))
 	{
 		target + 1 > 3 ? target = 0 : target++;
-		Serial.println("Set Target");
+		//Serial.println("Set Target");
 	}
 
 	//strip.setBrightness(~map(analogRead(A0), 0, 1023, 0, 255));
@@ -816,14 +818,14 @@ void loop(void)
 		//distance = calcDistance(28.593936, -81.304642, GEOLAT0, GEOLON0);
 		distance = calcDistance(degMin2DecDeg(latIndicator, latitude), degMin2DecDeg(longIndicator, longitude), targets[target].lat, targets[target].lon);
 
-		Serial.println("Set Distance and Bearing");
-		Serial.println(String(distance) + "\n" + String(heading));
+		//Serial.println("Set Distance and Bearing");
+		//Serial.println(String(distance) + "\n" + String(heading));
 
 #if SDC_ON
 		// write current position to SecureDigital then flush
 		if (latitude[0] != NULL && longitude[0] != NULL)
 		{
-			dataFile.println(String(longitude) + ',' + String(latitude) + ',' + distance);
+			dataFile.println(String(degMin2DecDeg(longIndicator, longitude)) + ',' + String(degMin2DecDeg(latIndicator, latitude)) + ',' + distance);
 			dataFile.flush();
 		}
 
